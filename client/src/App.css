@@ -1,0 +1,105 @@
+/* Toggle button for switching from sign-in and sign-up page contents: */
+/* .switch {
+	position: relative;
+	display: inline-block;
+	width: 600px;
+	height: 340px;
+} */
+
+/* Hiding default html checkbox */
+/* putting space between two selectors allows them to be selected separately */
+/* .switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+} */
+
+/* The slider */
+/* .slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	transition: 0.4s;
+	/* we can add specialised property values (especially for transition) for different systems later */
+/* -webkit-transition: 0.4s; */
+/* border-radius: 340px;
+} */
+
+/* .slider:before {
+	position: absolute;
+	content: "";
+	/* we will fill in the content for sign-in and sign-up */
+/* height: 260px;
+	width: 260px;
+	left: 40px;
+	bottom: 40px;
+	background-color: white;
+	transition: 0.4s; */
+/* we can add specialised property values (especially for transtion) for different systems later */
+/* -webkit-transition: 0.4s; */
+/* border-radius: 50%;
+} */
+
+/* `+` operator is called next-sibling combinator. Only works when both elements are children of same parent and if second follows the first */
+/* Both conditions need to be true for `+` to work */
+/* input:checked+.slider {
+	background-color: #2196f3;
+}
+
+input:focus+.slider {
+	box-shadow: 0 0 1px #2196f3;
+} */
+
+/* input:checked+.slider:before { */
+/* add specialized properties later */
+/* -webkit-transform: translateX(260px);
+	-ms-transform: translateX(260px); */
+/* transform: translateX(260px);
+	/* transforms from X-axis */
+/* } */
+
+
+
+/* Main box for the sign-in sign-up page: */
+/* .main-box {} */
+
+/* Navbar styling (only sign-in and sign-up) */
+.navbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: #333;
+	color: #fff;
+	padding: 1rem;
+	/* No need to define base font size for rem. Browser and devices will decide. */
+}
+
+.navbar-center .nav-links {
+	list-style-type: none;
+	display: flex;
+	margin: 0;
+	padding: 0;
+}
+
+.navbar-center .nav-links li {
+	margin-right: 1rem;
+}
+
+.navbar-center .nav-links a {
+	color: #fff;
+	text-decoration: none;
+}
+
+.navbar-center .nav-links a:hover {
+	color: red;
+	text-decoration: underline;
+}
+
+.navbar-center .nav-links a:active {
+	color: seagreen;
+	text-decoration: underline 5px;
+}
