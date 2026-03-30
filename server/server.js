@@ -4,6 +4,7 @@ import express from 'express';
 // internal packages/modules/libraries:
 import connectDb from './utils/connectDb.js';
 import errorHandler from './middlewares/error-middleware.js';
+import routes from './routes/indexRouters.js';
 
 // creating an app object:
 const app = express();
@@ -15,9 +16,7 @@ const port = process.env.PORT;
 app.use(express.json());
 
 // creating middlewares:
-app.get('/', (req, res) => {
-	res.send('Hello World!');
-});
+app.use('/api', routes);
 
 // error middleware always follows in last to catch any error:
 app.use(errorHandler);

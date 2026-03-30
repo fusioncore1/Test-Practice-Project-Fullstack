@@ -1,10 +1,10 @@
 const validateData = (schema) => {
 
-	// getting data from request body:
-	const data = req.body;
 
 	return async (req, res, next) => {
 		try {
+			// getting data from request body:
+			const data = req.body;
 
 			// validating data:
 			const validatedData = await schema.validateAsync(data);
@@ -13,7 +13,7 @@ const validateData = (schema) => {
 			req.validated = validatedData;
 
 			// calling in next middleware:
-			next()
+			next();
 		} catch (error) {
 			next(error);
 		}
