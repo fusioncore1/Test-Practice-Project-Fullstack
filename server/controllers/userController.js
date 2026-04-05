@@ -10,11 +10,22 @@ const signUpUser = async (req, res, next) => {
 		// getting unique data:
 		const uniqueData = { fullname: data.fullname, username: data.username, email: data.email };
 
-		// checking if the user already exists or not
+		// checking if the user already exists or not:
 		const userExists = await User.find(uniqueData);
+		const userExists2 = await User.find({ username: data.username, email: data.email });
+		const userExists3 = await User.find({ username: data.username });
+		const userExists4 = await User.find({ email: data.email });
 
 		// if user doesn't exist, we will create data, else we will return function:
-		if (!userExists) {
+		if (!userExists || !userExists2 || !userExists3 || !userExists4) {
+			// checking if the password field matches confirmPassword field:
+			if (data.password !== data.confirmPassword) {
+				return res.status(400).send({
+					message: 'Password and Confirm Password should match',
+					success: false,
+				});
+			}
+
 			// creating the data:
 			const user = new User(data);
 
@@ -34,6 +45,11 @@ const signUpUser = async (req, res, next) => {
 			success: true,
 		});
 	} catch (error) {
+		res.status(422).send({   // 422 is the status code for unprocessable content
+			message: 'User data is not proper',
+			success: false,
+		});
+		console.log('Catch block error');
 		next(error);
 	}
 }

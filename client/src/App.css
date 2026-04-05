@@ -67,13 +67,22 @@ input:focus+.slider {
 /* Main box for the sign-in sign-up page: */
 /* .main-box {} */
 
+/* css for logo-img */
+.logo {
+	height: 200px;
+	width: 250px;
+	display: flex;
+	align-items: center;
+	background-color: #ccc;
+}
+
 /* Navbar styling (only sign-in and sign-up) */
 .navbar {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	background-color: #333;
-	color: #fff;
+	background-color: #ccc;
+	color: black;
 	padding: 1rem;
 	/* No need to define base font size for rem. Browser and devices will decide. */
 }
@@ -102,4 +111,8 @@ input:focus+.slider {
 .navbar-center .nav-links a:active {
 	color: seagreen;
 	text-decoration: underline 5px;
+}
+
+.passwordField {
+	display: flex;
 }

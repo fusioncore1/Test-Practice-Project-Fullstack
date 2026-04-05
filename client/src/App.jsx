@@ -11,18 +11,13 @@ function App() {
 
 	return (
 		<>
-			{/* Main logo */}
-			<div>
-				<img src="./stark-industries-svg.svg" alt="company logo" />
-			</div>
-
 			{/* toggle for sign-in and sign-up */}
 			{/* <label htmlFor="entryToggle" className="switch">
 				<input type="checkbox" />
 				<span className="slider"></span>
 			</label> */}
 
-			{/* Navbar for sign-in and sign-up */}
+			{/* Navbar with logo for sign-in and sign-up */}
 			<Navbar />
 
 			<h1>Welcome</h1>
@@ -39,10 +34,16 @@ function App() {
 			<a href="">Continue with Google</a>
 			<a href="">Continue with Apple</a> */}
 
+			{/* Creating this for temporary purpose: */}
+			{/* <SignIn /> */}
+			{/* <SignUp /> */}
+			{/* Till here it will be temporary */}
+
 			{/* Routes for Navbar */}
 			<Routes>
-				<Route path='/SignIn' element={SignIn} />
-				<Route path='/SignUp' element={SignUp} />
+				<Route path='/' element={<SignIn />} />    {/* Home Page */}
+				<Route path='/sign-in' element={<SignIn />} />
+				<Route path='/sign-up' element={<SignUp />} />
 			</Routes>
 		</>
 	)
