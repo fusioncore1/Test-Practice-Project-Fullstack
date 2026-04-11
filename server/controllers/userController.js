@@ -16,8 +16,19 @@ const signUpUser = async (req, res, next) => {
 		const userExists3 = await User.find({ username: data.username });
 		const userExists4 = await User.find({ email: data.email });
 
+		const userExistsCheck = (
+			!(userExists || userExists2 || userExists3 || userExists4)
+			||
+			(
+				userExists.length === 0 ||
+				userExists2.length === 0 ||
+				userExists3.length === 0 ||
+				userExists4.length === 0
+			)
+		);
+
 		// if user doesn't exist, we will create data, else we will return function:
-		if (!userExists || !userExists2 || !userExists3 || !userExists4) {
+		if (userExistsCheck) {
 			// checking if the password field matches confirmPassword field:
 			if (data.password !== data.confirmPassword) {
 				return res.status(400).send({
@@ -29,8 +40,14 @@ const signUpUser = async (req, res, next) => {
 			// creating the data:
 			const user = new User(data);
 
+			// password hashing here:
+
+
 			// saving the data into db (db operations are always in async-await):
 			await user.save();
+
+			// will be sending this data to the user in console:
+			// console.log(storedData);
 		} else {
 			return res.status(409).send({   // 409 is the status code for data confliction
 				message: 'User already exists',
@@ -45,10 +62,16 @@ const signUpUser = async (req, res, next) => {
 			success: true,
 		});
 	} catch (error) {
-		res.status(422).send({   // 422 is the status code for unprocessable content
-			message: 'User data is not proper',
-			success: false,
-		});
+
+		// response can't be sent twice (but why here I don't understand):
+		// res.status(422).send({   // 422 is the status code for unprocessable content
+		// 	message: 'User data is not proper',
+		// 	success: false,
+		// });
+
+		// // Okay let's try with this one (Okay, this one's not working as well):
+		// res.status(422).json(error);
+
 		console.log('Catch block error');
 		next(error);
 	}
@@ -57,7 +80,7 @@ const signUpUser = async (req, res, next) => {
 // controller function to sign-in/login user:
 const signInUser = async (req, res, next) => {
 	try {
-
+		console.log('Hello World');
 	} catch (error) {
 		next(error);
 	}

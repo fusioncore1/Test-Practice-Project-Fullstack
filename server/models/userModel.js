@@ -46,13 +46,12 @@ const userSchema = new Schema({
 }, { timestamps: true });
 
 // we'll hash password using mongoose pre method before saving the data into db:
-userSchema.pre('save', async (next) => {   // `pre()` method works before the specified event happens, which is here 'save' (save to db)
-
+userSchema.pre('save', async function () {   // `pre()` method works before the specified event happens, which is here 'save' (save to db)
 	// hashing both password and confirmPassword:
-	this.password = await bcrypt.hash(this.password, 20);   // `this` refers to the current schema here
-	this.confirmPassword = await bcrypt.hash(this.confirmPassword, 20);
+	this.password = await bcrypt.hash(this.password, 12);   // `this` refers to the current schema here
+	this.confirmPassword = await bcrypt.hash(this.confirmPassword, 12);
 
-	next();   // call to the next middleware
+	// next();   // call to the next middleware
 });
 
 // creating the model:

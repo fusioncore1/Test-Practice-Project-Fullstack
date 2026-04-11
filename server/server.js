@@ -10,6 +10,9 @@ import routes from './routes/indexRouters.js';
 // creating an app object:
 const app = express();
 
+// putting before middlewares to parse the incoming request:
+app.use(express.json());
+
 // options for CORS:
 const corsOptions = {
 	origin: 'http://localhost:5173',
@@ -23,8 +26,6 @@ app.use(cors(corsOptions));
 // creating constants:
 const port = process.env.PORT || 3001;
 
-// putting before middlewares to parse the incoming request:
-app.use(express.json());
 
 // creating middlewares:
 app.use('/api/v1', routes);
@@ -40,5 +41,5 @@ connectDb();
 
 // server listening for request:
 app.listen(port, () => {
-	console.log(`Test Practice app listening on address: https://localhost:${port}`);
+	console.log(`Test Practice app listening on address: http://localhost:${port}`);
 });

@@ -21,20 +21,45 @@ const schema = Joi.object({
 // creating the sign-in component:
 const SignIn = () => {
 
+	// default values to reset the form:
+	const defaultValues = {
+		email: '',
+		password: '',
+	};
+
 	// destructuring variables from hook:
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState,   // this one will be for reset
+		// formState: { errors },   // this is equivalent to `{ errors } = formState;` especially if you only write `formState` here instead
+		formState: {
+			errors,
+			isSubmitSuccessful,
+		},
+		reset,
 	} = useForm({
+		mode: 'onSubmit',
 		resolver: joiResolver(schema),
+		defaultValues,     // `defaultValues: defaultValues` this object will determine the form's default state after sending data
 	});
 
 	// state variable to show or hide password:
 	const [showPass, setShowPass] = useState(false);
 
+	// state variable to handle the form data:
+	const [user, setUser] = useState(false);
+
 	// submit function:
-	const onSubmit = (data) => console.log(data);   // for now let's just print the data on console
+	const onSubmit = (data) => {
+		try {
+			const { email, password } = data;
+		} catch (error) {
+			console.error(error);
+
+			// keep the form values so user can retry
+		}
+	}
 
 	return (
 		<>
@@ -59,8 +84,6 @@ const SignIn = () => {
 				<a href="">Continue with Google</a> <br />
 				<a href="">Continue with Apple</a> <br />
 			</form>
-
-			{/* validate the form using joi and react-hook-form */}
 		</>
 	);
 }
