@@ -36,8 +36,3 @@ export default ({ mode }) => {
 
 	return defineConfig(config);
 };
-
-
-// Work on the `vite proxy config for react` problem.
-
-// CONTINUE PROJECT VIDEO FROM: 2:32:30

@@ -1,5 +1,6 @@
 // internal libraries/packages/modules:
 import User from '../models/userModel.js';
+import bcrypt from 'bcryptjs';
 
 // controller function to sign-up/register user:
 const signUpUser = async (req, res, next) => {
@@ -7,71 +8,56 @@ const signUpUser = async (req, res, next) => {
 		// getting validated data from request object:
 		const data = req.validated;
 
-		// getting unique data:
-		const uniqueData = { fullname: data.fullname, username: data.username, email: data.email };
+		// check password first (equality of password and confirmPassword field values):
+		if (data.password !== data.confirmPassword) {
+			return res.status(400).send({
+				message: 'Password and confirm password should match',
+				success: false,
+			});
+		}
 
 		// checking if the user already exists or not:
-		const userExists = await User.find(uniqueData);
-		const userExists2 = await User.find({ username: data.username, email: data.email });
-		const userExists3 = await User.find({ username: data.username });
-		const userExists4 = await User.find({ email: data.email });
+		const userNameExists = await User.findOne({ username: data.username });
+		const userEmailExists = await User.findOne({ email: data.email });
 
-		const userExistsCheck = (
-			!(userExists || userExists2 || userExists3 || userExists4)
-			||
-			(
-				userExists.length === 0 ||
-				userExists2.length === 0 ||
-				userExists3.length === 0 ||
-				userExists4.length === 0
-			)
-		);
+		const userExistsCheck = (userNameExists || userEmailExists);
 
 		// if user doesn't exist, we will create data, else we will return function:
 		if (userExistsCheck) {
-			// checking if the password field matches confirmPassword field:
-			if (data.password !== data.confirmPassword) {
-				return res.status(400).send({
-					message: 'Password and Confirm Password should match',
-					success: false,
-				});
-			}
-
-			// creating the data:
-			const user = new User(data);
-
-			// password hashing here:
-
-
-			// saving the data into db (db operations are always in async-await):
-			await user.save();
-
-			// will be sending this data to the user in console:
-			// console.log(storedData);
-		} else {
 			return res.status(409).send({   // 409 is the status code for data confliction
 				message: 'User already exists',
 				success: false,
 			});
 		}
 
+		// creating the data:
+		const user = new User(data);
+
+		// saving the data into db (db operations are always in async-await):
+		await user.save();
+
+		// token generation:
+		const token = await user.generateAuthToken();
+
+		// generate cookie:
+		res.cookie('userCookie', token, {
+			expires: new Date(Date.now() + 9000000),   // expires after 15 minutes after the cookie is set
+			httpOnly: true,   // only now web server can access this cookie
+		});
+
+		const result = {
+			userValid: user,
+			token,   // equivalent to: `token: token`
+		};
+
 		// sending response:
 		res.status(201).send({   // 201 is the status code for proper data
-			data: data,
-			message: 'User registered successfully',
+			data: result,
+			message: 'Sign-Up Successful',
+			token: token,
 			success: true,
 		});
 	} catch (error) {
-
-		// response can't be sent twice (but why here I don't understand):
-		// res.status(422).send({   // 422 is the status code for unprocessable content
-		// 	message: 'User data is not proper',
-		// 	success: false,
-		// });
-
-		// // Okay let's try with this one (Okay, this one's not working as well):
-		// res.status(422).json(error);
-
 		console.log('Catch block error');
 		next(error);
 	}
@@ -80,7 +66,62 @@ const signUpUser = async (req, res, next) => {
 // controller function to sign-in/login user:
 const signInUser = async (req, res, next) => {
 	try {
-		console.log('Hello World');
+		// getting validated data from request object:
+		// const data = req.validated;
+		const data = req.body;
+
+		console.log('Data: ', data);
+
+		// checking if all the data has been entered or not:
+		if (!data.email || !data.password) {
+			return res.status(422).send({
+				message: 'Please fill in all details',
+				success: false,
+			});
+		}
+
+		// checking if the user already exists or not:
+		const userExists = await User.findOne({ email: data.email });
+
+		if (userExists) {
+			const isMatch = await bcrypt.compare(data.password, userExists.password);
+
+			// when any one of the credentials doesn't match:
+			if (!isMatch) {
+				return res.status(422).send({
+					message: 'Invalid Credentials',
+					success: false,
+				});
+			}
+			// token generation:
+			const token = await userExists.generateAuthToken();
+
+			// generate cookie:
+			res.cookie('userCookie', token, {
+				expires: new Date(Date.now() + 9000000),   // expires after 15 minutes after the cookie is set
+				httpOnly: true,   // only web server can now access this cookie
+			});
+
+			// CONTINUE PROJECT VIDEO FROM: 3:05:37
+			// Sign-Up code still not working. Solve it first.
+
+			const result = {
+				userValid: userExists,
+				token,
+			};
+
+			return res.status(201).send({
+				message: 'Sign-In Successful',
+				data: result,
+				token: token,
+				success: true,
+			});
+		} else {
+			return res.status(404).send({
+				message: 'Invalid credentials',   // we could write 'User does not exist' but that would be too specific
+				success: false,
+			});
+		}
 	} catch (error) {
 		next(error);
 	}

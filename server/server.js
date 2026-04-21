@@ -1,6 +1,7 @@
 // external packages/modules/libraries:
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 // internal packages/modules/libraries:
 import connectDb from './utils/connectDb.js';

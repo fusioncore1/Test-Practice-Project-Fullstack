@@ -1,6 +1,6 @@
 // external libraries/packages/modules:
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { joiResolver } from '@hookform/resolvers/joi';
 import Joi from 'joi';
 
@@ -51,15 +51,49 @@ const SignIn = () => {
 	const [user, setUser] = useState(false);
 
 	// submit function:
-	const onSubmit = (data) => {
+	const onSubmit = async (data) => {
 		try {
+			// destructuring data from user:
 			const { email, password } = data;
+
+			// sending data and getting response:
+			const response = await fetch('/api/users/sign-in', {   // `/api` will work as match-maker here, helpful for finding url 
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					email, password,
+				}),
+			});
+
+			const res = await response.json();
+			console.log(res);
+
+			if (response.ok) {
+				alert('Welcome Back...');
+
+				// setting user state:
+				setUser(res.data);
+			}
 		} catch (error) {
 			console.error(error);
 
 			// keep the form values so user can retry
 		}
 	}
+
+	// all effects should be put in last just before `return`:
+	// resetting form data in useEffect:
+	useEffect(() => {
+		if (isSubmitSuccessful && user) {   // we already destructured `isSubmitSuccessful` above
+			// resetting the values:
+			reset(defaultValues);
+
+			// resetting user values:
+			setUser(null);
+		}
+	}, [formState, isSubmitSuccessful, user, reset]);
 
 	return (
 		<>
@@ -75,10 +109,10 @@ const SignIn = () => {
 					</div>
 					<br />
 				</div>
-				{/* Add show-hide or eye button in password field to show or hide password */}
-				{/* {errors.password && <p>Password is required</p>} <br /> */}
 				<p>{errors.password?.message}</p>
 
+				{/* Add show-hide or eye button in password field to show or hide password */}
+				{/* {errors.password && <p>Password is required</p>} <br /> */}
 				<input type="submit" value="Submit" /> <br />
 
 				<a href="">Continue with Google</a> <br />

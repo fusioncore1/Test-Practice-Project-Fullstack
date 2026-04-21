@@ -70,8 +70,10 @@ const SignUp = () => {
 	// submit function:
 	const onSubmit = async (data) => {
 		try {
+			// destructuring data from user:
 			const { fullname, username, email, password, confirm_password } = data;
 
+			// sending data and getting response:
 			const response = await fetch('/api/users/sign-up', {   // original was: `/users/sign-up` here ('/api' is a key to find url and will be replaced)
 				method: 'POST',
 				headers: {
@@ -153,7 +155,6 @@ const SignUp = () => {
 			</form>
 		</>
 	);
-
 }
 
 // exporting sign-up component:
