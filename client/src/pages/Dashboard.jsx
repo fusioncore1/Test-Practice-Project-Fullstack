@@ -15,8 +15,6 @@ const Dashboard = () => {
 	// state for data setting for loading state: 
 	const [data, setData] = useState(false);
 
-	// CONTINUE PROJECT VIDEO FROM: 4:31:49
-
 	// history function for page navigation:
 	const history = useNavigate();
 
