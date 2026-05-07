@@ -27,7 +27,6 @@ app.use(cors(corsOptions));
 // creating constants:
 const port = process.env.PORT || 3001;
 
-
 // creating middlewares:
 app.use('/api/v1', routes);
 
@@ -44,3 +43,5 @@ connectDb();
 app.listen(port, () => {
 	console.log(`Test Practice app listening on address: http://localhost:${port}`);
 });
+
+// HAVEN'T USED COOKIE PARSER ANYWHERE HERE!

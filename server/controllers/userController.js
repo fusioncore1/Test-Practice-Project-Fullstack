@@ -1,6 +1,8 @@
+// external libraries/packages/modules:
+import bcrypt from 'bcryptjs';
+
 // internal libraries/packages/modules:
 import User from '../models/userModel.js';
-import bcrypt from 'bcryptjs';
 
 // controller function to sign-up/register user:
 const signUpUser = async (req, res, next) => {
@@ -70,8 +72,6 @@ const signInUser = async (req, res, next) => {
 		// const data = req.validated;
 		const data = req.body;
 
-		console.log('Data: ', data);
-
 		// checking if all the data has been entered or not:
 		if (!data.email || !data.password) {
 			return res.status(422).send({
@@ -102,9 +102,6 @@ const signInUser = async (req, res, next) => {
 				httpOnly: true,   // only web server can now access this cookie
 			});
 
-			// CONTINUE PROJECT VIDEO FROM: 3:05:37
-			// Sign-Up code still not working. Solve it first.
-
 			const result = {
 				userValid: userExists,
 				token,
@@ -130,8 +127,28 @@ const signInUser = async (req, res, next) => {
 // controller function to sign-out/logout user:
 const signOutUser = async (req, res, next) => {
 	try {
+		// removing the token:
+		req.rootUser.tokens = req.rootUser.tokens.filter((currElem) => {
+			return currElem.token !== req.token;
+		});
 
+		// clearing cookie:
+		res.clearCookie('userCookie', { path: '/' });   // path to home route
+
+		// updation of token data:
+		req.rootUser.save();
+
+		// sending json response:
+		res.status(201).json({
+			message: 'Logout successful',
+			success: true,
+		});
 	} catch (error) {
+		res.status(401).json({
+			error: error,
+			message: 'Logout failed',
+			success: false,
+		});
 		next(error);
 	}
 }
@@ -154,6 +171,21 @@ const getAllUsers = async (req, res, next) => {
 		return res.status(200).send({
 			data: getUsers,
 			message: 'All users fetched successfully',
+			success: true,
+		});
+	} catch (error) {
+		next(error);
+	}
+}
+
+// controller function to validate user:
+const validateUser = async (req, res, next) => {
+	try {
+		const validUserOne = await User.findOne({ _id: req.userId });
+
+		res.status(201).send({
+			data: validUserOne,
+			message: 'User validated',
 			success: true,
 		});
 	} catch (error) {
@@ -257,6 +289,7 @@ export {
 	signUpUser,
 	signInUser,
 	signOutUser,
+	validateUser,
 	getAllUsers,
 	getUserById,
 	updateUserById,
