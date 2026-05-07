@@ -2,6 +2,7 @@
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import { joiResolver } from '@hookform/resolvers/joi';
+import { useNavigate } from 'react-router';
 import Joi from 'joi';
 
 // creating the validation schema:
@@ -50,6 +51,9 @@ const SignIn = () => {
 	// state variable to handle the form data:
 	const [user, setUser] = useState(false);
 
+	// history variable for page navigation:
+	const history = useNavigate();
+
 	// submit function:
 	const onSubmit = async (data) => {
 		try {
@@ -68,10 +72,16 @@ const SignIn = () => {
 			});
 
 			const res = await response.json();
-			console.log(res);
 
 			if (response.ok) {
+				// alert for login:
 				alert('Welcome Back...');
+
+				// setting the cookies in localStorage:
+				localStorage.setItem("userDataToken", res.data.token);
+
+				// navigating user to dashboard:
+				history('/dashboard');
 
 				// setting user state:
 				setUser(res.data);

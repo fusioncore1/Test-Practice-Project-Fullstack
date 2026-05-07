@@ -87,7 +87,11 @@ const SignUp = () => {
 			const res = await response.json();
 
 			if (response.ok) {
+				// sending the alert:
 				alert("User Registered Successfully");
+
+				// setting the cookies in the localStorage:
+				localStorage.setItem('userDataToken', res.data.token);
 
 				// setting user state:
 				setUser(res.data);
